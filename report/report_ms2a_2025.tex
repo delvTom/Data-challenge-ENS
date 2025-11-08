@@ -1,0 +1,150 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\geometry{left=2cm, right=2cm, top=1.85cm, bottom=1.85cm}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{amsmath, amssymb}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{0.8em}{0.45em}
+\titlespacing*{\subsection}{0pt}{0.6em}{0.3em}
+\usepackage{setspace}
+\setstretch{0.975}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue}
+
+\begin{document}
+
+% ===== Header with logo =====
+\begin{minipage}{0.15\textwidth}
+  \includegraphics[width=\linewidth]{logo_sorbonne.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.8\textwidth}
+  \raggedleft
+  \textbf{Sorbonne University}\\
+  Master 2 MS2A -- Mathematics, Statistics and Learning
+\end{minipage}
+
+\vspace{0.55em}
+
+% ===== Main title =====
+\begin{center}
+  {\Large \textbf{Data Challenge 2025 -- Gas Detection}}\\[0.25em]
+  {\small Summary Report -- Tom DE OLIVEIRA}\\[0.2em]
+  {\footnotesize \today}\\[0.4em]
+  \rule{0.85\textwidth}{0.4pt}
+\end{center}
+
+\vspace{0.65em}
+
+The \textbf{Data Challenge 2025 (ENS / Bertin Technologies)} focuses on simultaneously predicting alarm levels for different categories of toxic gases.
+
+\section*{1. Data Preprocessing}
+
+\medskip
+\noindent
+\textbf{Exploratory analysis:}
+The exploratory analysis first confirmed the overall quality of the dataset. All variables are numerical, with no missing values or major anomalies, and sensor distributions are globally consistent.  
+However, several critical points emerged during this phase.  
+First, Figure~\ref{fig:eda} (left) highlights a \textbf{significant distribution shift in the \emph{Humidity}} variable between the training and test sets.  
+This shift, already mentioned in the challenge description, reveals a structural \emph{data shift}: test samples correspond to physical conditions rarely observed in the training data.  
+Further analysis across all sensors showed that this phenomenon extended, to a lesser extent, to other variables as well, confirming a \textbf{global train/test shift}.  
+On the target side, variable \textbf{\emph{c15}} was found to be constant (filled with zeros) across the entire training set, making it uninformative for learning.  
+Finally, Figure~\ref{fig:eda} (right) presents the \textbf{distribution of the mean of the 23 targets per sample}.  
+It is highly asymmetric, with a majority of low-concentration samples and a few high values.  
+This imbalance suggests an uneven density between low and high-value regions, an aspect that influenced the validation and error-weighting strategy discussed later.
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{0.47\linewidth}
+    \centering
+    \includegraphics[width=0.94\linewidth]{fig_humidity_shift.png}
+    \caption{Train/test shift on \emph{Humidity}.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.47\linewidth}
+    \centering
+    \includegraphics[width=0.94\linewidth]{fig_y_mean.png}
+    \caption{Mean of the 23 targets (train).}
+  \end{subfigure}
+  \caption{Initial exploration: (left) humidity shift, (right) stratification motivation.}
+  \label{fig:eda}
+\end{figure}
+
+\medskip
+\noindent
+\textbf{Data cleaning and preprocessing:}
+Following the exploratory analysis, several adjustments were implemented to mitigate the effects of the \emph{data shift} and improve generalization stability.  
+First, the \emph{Humidity} variable was \textbf{removed} from most model variants. Its distribution, highly different between train and test, introduced strong instability in cross-validation and degraded leaderboard performance.  
+Alternative approaches were tested to keep it (rank transformation, quantile normalization, shared outlier detection), but none produced stable behavior, confirming that its removal offered the best bias/variance tradeoff.  
+Second, a \textbf{global quantile clipping} (1\textsuperscript{st}–99\textsuperscript{th} percentiles) was applied to all numerical variables to reduce the influence of extreme values and alleviate distributional differences.  
+This also improved the robustness of ensemble estimators.  
+Finally, additional descriptors were introduced using \textbf{\emph{row-wise} features}: means, medians, standard deviations, interquartile ranges (IQR), mean absolute deviations (MAD), and L1/L2 norms computed per sample.  
+These aggregates capture invariant statistical properties of the sensor measurements and proved particularly effective in non-stationary contexts, significantly improving robustness to the train/test shift.  
+These transformations formed the foundation of the pipeline used for model selection and subsequent experiments.
+
+\section*{2. Model Selection Phase}
+
+I compared several model families: \emph{Random Forest}, \emph{Extra Trees}, \emph{XGBoost}, and \emph{LightGBM}.  
+Boosting methods showed strong local performance but high variability on the public leaderboard (sensitive to distribution shifts).  
+\emph{Random Forest} served as a robust baseline, while the \textbf{Extra Trees model} stood out for its speed on a large dataset ($\sim$330k rows) and robustness to noisy distributions.  
+
+Several \textbf{Extra Trees variants} were trained: with/without \emph{row-wise} features, limited depth, bootstrap, and different random seeds.  
+Evaluation was performed using the \textbf{Weighted RMSE} metric (weight 1.2 for $y \ge 0.5$), as required by the challenge.  
+Because this metric depends on the true test distribution, local validation was imperfect; model changes were empirically validated through the two daily submissions allowed.
+
+\section*{3. Final Model}
+
+The final pipeline is an \textbf{ensemble of six ExtraTreesRegressors} (multi-output), trained on stratified folds.  
+Predictions were combined using an \textbf{optimized blending} (random sampling of weights on the simplex), followed by a \textbf{linear calibration} per target and a \textbf{shrinkage} toward the training mean ($\alpha \approx 0.95$).  
+A final \emph{clipping} ensured outputs remained in $[0,1]$.
+
+\medskip
+\noindent
+\textbf{Scores:} \quad Public: \textbf{0.1400} \quad / \quad Private: \textbf{0.1520}
+
+\medskip
+
+\noindent
+\renewcommand{\arraystretch}{0.9}
+Table~\ref{tab:scores} summarizes the performance evolution across experiments.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+Date & Method & Comment (params) & Public Score \\
+\midrule
+28/09 & RF (first submission) & simple baseline & 0.1565 \\
+21/10 & RF (K-Fold) & depth/leaves tuning & 0.1540 \\
+31/10 & RF + RW & added \emph{row-wise} features (improved robustness) & 0.1488 \\
+01/11 & ExtraTrees & n\_estimators=300, max\_features=0.8 & 0.1417 \\
+07/11 & ET\_BLEND & 6 variants (+RW, seeds, bootstrap) & \textbf{0.1400} \\
+\bottomrule
+\end{tabular}
+\caption{Selected experiments and public leaderboard progression.}
+\label{tab:scores}
+\end{table}
+
+\section*{4. Challenges and Achievements}
+
+\textbf{Challenges.}  
+The train–test shift (notably \emph{Humidity}) made local validation unreliable; domain adaptation attempts (e.g., \emph{CORAL}, adversarial validation) did not yield stable gains in this context.  
+The \textbf{Weighted RMSE} metric, penalizing high-concentration errors more strongly, further widened the gap between OOF and leaderboard scores.
+
+\medskip
+\noindent
+\textbf{Achievements.}  
+I designed a \textbf{reproducible and modular pipeline}: quantile clipping, \emph{Humidity} removal, \textbf{\emph{row-wise}} features (strong robustness lever), diverse \textbf{Extra Trees} variants, optimized \textbf{blending}, \textbf{calibration}, and \textbf{shrinkage}.  
+Iterative submissions guided exploration despite a metric that was difficult to \emph{approximate} outside the competition platform.  
+
+\vspace{0.5em}
+\noindent\textit{The submitted notebook fully reproduces the pipeline and the final submission.}
+
+\end{document}
