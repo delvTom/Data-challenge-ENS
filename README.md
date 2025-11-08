@@ -9,7 +9,7 @@
 This project was carried out as part of the **Data Challenge 2025**.  
 The goal was to **predict the concentration of 23 gases simultaneously** using multivariate sensor measurements.  
 
-A major difficulty was the **data distribution shift** between the training and test sets — mainly due to the *Humidity* variable — as the test data represented physical conditions rarely observed in training.  
+A major challenge was the **data distribution shift** between the training and test sets — mainly due to the *Humidity* variable — as the test data represented physical conditions rarely observed in training.  
 The evaluation metric was a **Weighted RMSE**, which penalized larger errors more strongly for higher concentration values.
 
 ---
@@ -26,13 +26,12 @@ Row-wise statistical features (mean, std, IQR, MAD, etc.) played a key role in i
 
 ## 📂 Repository Structure
 
-Data-Challenge-MS2A-2025/
-│
-├── DataChallenge_2025_Notebook_Final.ipynb # Main notebook (EDA → preprocessing → modeling → submission)
-├── figures/ # EDA plots (shift, target distribution, etc.)
-├── report/ # Final report (2-page academic summary)
-├── submission_ET_BLEND_v1.csv # Final submission file
-└── README.md # Project description
+**Main files and directories:**
+- `DataChallenge_2025_Notebook_Final.ipynb` — Complete notebook (EDA → preprocessing → modeling → submission)  
+- `figures/` — Exploratory plots (distribution shift, target distribution, etc.)  
+- `report/` — Final 2-page academic report in PDF format  
+- `submission_ET_BLEND_v1.csv` — Final submission file  
+- `README.md` — Project documentation  
 
 ---
 
@@ -47,7 +46,6 @@ and the final notebook allows full reproduction of the pipeline and submission.
 
 **Tom DE OLIVEIRA**  
 M2 MS2A – Sorbonne University  
-📧 [Add your professional email or LinkedIn profile here]
+📧 tom.deoliveira@hotmail.fr
 
 ---
-
