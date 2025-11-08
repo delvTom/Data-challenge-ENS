@@ -27,10 +27,8 @@ Row-wise statistical features (mean, std, IQR, MAD, etc.) played a key role in i
 ## 📂 Repository Structure
 
 **Main files and directories:**
-- `DataChallenge_2025_Notebook_Final.ipynb` — Complete notebook (EDA → preprocessing → modeling → submission)  
-- `figures/` — Exploratory plots (distribution shift, target distribution, etc.)  
+- `01_EDA.ipynb / 02_Final_model.ipynb` — Complete notebook (EDA → preprocessing → modeling → submission)  
 - `report/` — Final 2-page academic report in PDF format  
-- `submission_ET_BLEND_v1.csv` — Final submission file  
 - `README.md` — Project documentation  
 
 ---
