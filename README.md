@@ -20,7 +20,7 @@ The final solution is based on an **ensemble of Extra Trees Regressors**, combin
 Row-wise statistical features (mean, std, IQR, MAD, etc.) played a key role in improving robustness under distribution shift.  
 
 - **Public score:** 0.1400  
-- **Private score:** 0.1520  
+- **Private score:** 0.1395  
 
 ---
 
