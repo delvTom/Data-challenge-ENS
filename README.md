@@ -1,10 +1,10 @@
-# 🧪 Data Challenge 2025 — Gas Detection  
+# Data Challenge 2025 — Gas Detection  
 **Sorbonne University – M2 MS2A (Mathematics, Statistics and Learning)**  
 **Organizers:** ENS Paris-Saclay × Bertin Technologies  
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 This project was carried out as part of the **Data Challenge 2025**.  
 The goal was to **predict the concentration of 23 gases simultaneously** using multivariate sensor measurements.  
@@ -14,7 +14,7 @@ The evaluation metric was a **Weighted RMSE**, which penalized larger errors mor
 
 ---
 
-## 🧠 Summary of the Approach
+## Summary of the Approach
 
 The final solution is based on an **ensemble of Extra Trees Regressors**, combined through a **weighted blending** strategy, followed by **linear calibration** and **shrinkage toward the training mean**.  
 Row-wise statistical features (mean, std, IQR, MAD, etc.) played a key role in improving robustness under distribution shift.  
@@ -24,7 +24,7 @@ Row-wise statistical features (mean, std, IQR, MAD, etc.) played a key role in i
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 **Main files and directories:**
 - `01_EDA.ipynb / 02_Final_model.ipynb` — Complete notebook (EDA → preprocessing → modeling → submission)  
@@ -33,7 +33,7 @@ Row-wise statistical features (mean, std, IQR, MAD, etc.) played a key role in i
 
 ---
 
-## 🧾 Report & Reproducibility
+## Report & Reproducibility
 
 The complete report is available in [`report/Rapport_DataChallenge_2025.pdf`](report/report_ms2a_2025.pdf),  
 and the final notebook allows full reproduction of the pipeline and submission.
@@ -44,7 +44,7 @@ and the final notebook allows full reproduction of the pipeline and submission.
 
 **Tom DE OLIVEIRA**  
 M2 MS2A – Sorbonne University  
-📧 tom.deoliveira@hotmail.fr
+tom.deoliveira@hotmail.fr
 
 ---
 
