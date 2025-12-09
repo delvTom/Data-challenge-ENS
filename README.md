@@ -9,7 +9,7 @@
 This project was carried out as part of the **Data Challenge 2025**.  
 The goal was to **predict the concentration of 23 gases simultaneously** using multivariate sensor measurements.  
 
-A major challenge was the **data distribution shift** between the training and test sets — mainly due to the *Humidity* variable — as the test data represented physical conditions rarely observed in training.  
+A major challenge was the **data distribution shift** between the training and test sets as the test data represented physical conditions rarely observed in training.  
 The evaluation metric was a **Weighted RMSE**, which penalized larger errors more strongly for higher concentration values.
 
 ---
