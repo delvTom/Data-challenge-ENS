@@ -38,15 +38,6 @@ Row-wise statistical features (mean, std, IQR, MAD, etc.) played a key role in i
 The complete report is available in [`report/Rapport_DataChallenge_2025.pdf`](report/report_ms2a_2025.pdf),  
 and the final notebook allows full reproduction of the pipeline and submission.
 
----
-
-## 👤 Author
-
-**Tom DE OLIVEIRA**  
-M2 MS2A – Sorbonne University  
-tom.deoliveira@hotmail.fr
-
----
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
