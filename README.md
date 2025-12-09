@@ -1,6 +1,6 @@
 # Data Challenge 2025 — Gas Detection  
 **Sorbonne University – M2 MS2A (Mathematics, Statistics and Learning)**  
-**Organizers:** ENS Paris-Saclay × Bertin Technologies  
+**Organizers:** Bertin Technologies  
 
 ---
 
